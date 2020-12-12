@@ -29,6 +29,10 @@
     {{-- Detect Current Page --}}
     <h5 class="my-2">Halaman : {{$siswas->currentPage()}}</h5>
 
+    {{-- Search Field --}}
+    <label for="search" class="form-label">Cari Data</label>
+    <input type="text" class="form-control" id="search" name="search" placeholder="Type to search...">
+
     {{-- table data --}}
     <table class="table table-hover mt-3">
         <thead>
@@ -44,6 +48,10 @@
         <tbody>
             @foreach($siswas as $s)
             <tr>
+                {{--
+                    Iteration logic
+                    current page - 1 * items per pages + loop iteration
+                --}}
                 <th scope="row" class="text-center">{{($siswas->currentPage()-1) * $siswas->perPage() + $loop->iteration}}</th>
                 <td class="text-center">{{$s->nis}}</td>
                 <td class="text-center">{{$s->nama}}</td>
@@ -142,4 +150,28 @@
         </div>
       </div>
     </div>
+
+    <script>
+        $(document).ready(function(){
+            fetch_siswa_data();
+
+            function fetch_siswa_data(query = ''){
+                $.ajax({
+                    url:"{{route('search.siswa')}}",
+                    method: 'GET',
+                    data: {query:query},
+                    dataType:'json',
+                    success:function(siswa)
+                    {
+                        $('tbody').html(siswa.table_data);
+                        $('#total_records').text(siswa.total_data);
+                    }
+                })
+            }
+            $(document).on('keyup', '#search', function(){
+                var query = $(this).val();
+                fetch_siswa_data(query);
+            });
+        });
+    </script>
 @endsection

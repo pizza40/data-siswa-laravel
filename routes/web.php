@@ -27,4 +27,4 @@ Route::get('/siswa/delete/{id}', [SiswaController::class, 'delete'])->name('dele
 Route::get('/siswa/profile/{id}', [SiswaController::class, 'profile'])->name('profile.siswa');
 
 //ajax dynamic select route
-// Route::get('/ajax-autocomplete-search', [SiswaController::class, 'selectSearch']);
+ Route::get('/siswa/search', [SiswaController::class, 'Search'])->name('search.siswa');

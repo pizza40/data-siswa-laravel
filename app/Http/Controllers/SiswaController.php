@@ -65,4 +65,48 @@ class SiswaController extends Controller
 
         return redirect('/siswa')->with('message', __('messages.destroy'));
     }
+
+    public function search(Request $request){
+        if ($request->ajax()) {
+            $output = '';
+            $query = $request->get('query');
+            if ($query != '') {
+                $siswa = DB::table('siswas')
+                    ->where('nama', 'like', '%'.$query.'%')
+                    ->orWhere('nis', 'like', '%'.$query.'%')
+                    ->orderBy('id', 'desc')
+                    ->get();
+            }else {
+                $siswa = DB::table('siswas')
+                    ->orderBy('id', 'desc')
+                    ->get();
+            }
+
+            $totalRow = $siswa->count();
+            if ($totalRow > 0) {
+                foreach ($siswa as $row) {
+                    $output .='
+                        <tr>
+                            <td>'.$row->nama.'</td>
+                            <td>'.$row->nis.'</td>
+                            <td>'.$row->jenis_kelamin.'</td>
+                        </tr>
+                    ';
+                }
+            }else {
+                $output .='
+                    <tr>
+                        <td class="align-center" colspan="5">Data Tidak di Temukan...</td>
+                    </tr>
+                ';
+            }
+
+            $siswa = array(
+                'table_data' => $output,
+                'total_data' => $totalRow,
+            );
+
+            echo json_encode($siswa);
+        }
+    }
 }
